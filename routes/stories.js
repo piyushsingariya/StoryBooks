@@ -21,6 +21,22 @@ router.post("/", ensureAuth, async (req, res) => {
   }
 });
 
+// Show User stories
+
+router.get("/user/:id", ensureAuth, async (req, res) => {
+  try {
+    const stories = await Story.find({ user:req.params.id, status: "public" })
+      .populate("user")
+      .sort({ createdAt: "desc" })
+      .lean();
+
+    res.render("stories/index", { stories });
+  } catch (error) {
+    console.log(error);
+    res.render("error/500");
+  }
+});
+
 // Show stories
 
 router.get("/", ensureAuth, async (req, res) => {
